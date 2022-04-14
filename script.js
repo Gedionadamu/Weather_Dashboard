@@ -4,19 +4,51 @@ var UserInput = $("input").val();
 var currentcity = "PlaceHolder";
 var searchHistory = [];
 var searchBtn = $(".search");
-var days = 5
+var cardEl = $(".card");
+var days = 5;
 
 
 
-
+ function init(){
+     var savedsearch = JSON.parse(localStorage.getItem("savedHistory"));
+     if (savedsearch !== null){
+         savedsearch = searchHistory;
+     }
+     renderHistory();
+ }
 function saveHistory(){
     searchHistory.push(UserInput)
     localStorage.setItem("savedHistory", JSON.stringify(searchHistory));
-    console.log(searchHistory);
+    // console.log(searchHistory);
 }
 function renderHistory(){
+    var localsearch = JSON.parse(localStorage.getItem("savedHistory"));
+    console.log(localsearch);
+       var historyEl = $('.history')
+       if (localsearch == null){
+           return
+       }
+       else{
+    for(var i=0; i < localsearch.length; i++) {
+        var search = $('<button>');
+        search.text(localsearch[i]);
+        search.addClass('btn btn-secondary historybtn ms-1 mt-1');
+        historyEl.append(search);
+
+    }
+}
+
 
 }
+//  var historybutton = $(".historybtn");
+//  console.log(historybutton);
+//  historybutton.on("click", function(){
+//      var txt = $(this).val();
+//      console.log(txt)
+
+//  })
+//  console.log
+
 
 searchBtn.on("click", function(){
     
@@ -31,9 +63,9 @@ searchBtn.on("click", function(){
     })
     .then(function(data){
         console.log(data)
-        console.log(data.main.temp);
-        console.log(data.wind.speed);
-        console.log(data.main.humidity);
+        $("#currenttemp").text("Current Temprature : " + data.main.temp + "°F");
+        $("#currentwind").text("Current Wind : " + data.wind.speed + "MPH");
+        $("#currenthumidity").text("Current Humidity : " + data.main.humidity + "%");
         console.log(data.coord.lat);    
         console.log(data.coord.lon);
         lat.push(data.coord.lat);
@@ -44,7 +76,7 @@ searchBtn.on("click", function(){
             return response2.json();
         })
         .then(function(data2){
-            console.log(data2.current.uvi)
+            $("#currentuv").text("Current UVI : " + data2.current.uvi)
         })
        
         fetch(`https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=current,minutely,hourly,alerts&appid=${APIkey}&units=imperial`)
@@ -54,17 +86,23 @@ searchBtn.on("click", function(){
         .then(function(data1){
             console.log(data1.daily);
             for(var i=0; i < 5; i++){
-                    console.log(data1.daily[i].temp.day)
-                    console.log(data1.daily[i].wind_speed)
-                    console.log(data1.daily[i].humidity)
-                    console.log(data1.daily[i].uvi)
+                
+                    $("#day"+[i]).text(moment().add(i+1, 'days').format("M/D/YYYY"));
+                    $("#temp"+[i]).text("Temprature : " + data1.daily[i].temp.day + "°F" );
+                    $("#wind"+[i]).text( "Wind : " + data1.daily[i].wind_speed  + "MPH");
+                    $("#humidity"+[i]).text("Humidity : " + data1.daily[i].humidity + "%" );
+                    $("#uv"+[i]).text( "UVI : " + data1.daily[i].uvi);
                 }
            
         })      
     })
-    
     saveHistory();
+    renderHistory();
+    
+    
 });
+
+init();
 
 
     
