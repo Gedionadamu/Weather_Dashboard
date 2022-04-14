@@ -37,7 +37,15 @@ searchBtn.on("click", function(){
         console.log(data.coord.lat);    
         console.log(data.coord.lon);
         lat.push(data.coord.lat);
-        lon.push(data.coord.lon); 
+        lon.push(data.coord.lon);
+        
+        fetch(`https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=minutely,hourly,daily,alerts&appid=${APIkey}`)
+        .then(function(response2){
+            return response2.json();
+        })
+        .then(function(data2){
+            console.log(data2.current.uvi)
+        })
        
         fetch(`https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=current,minutely,hourly,alerts&appid=${APIkey}&units=imperial`)
         .then(function(response1){
