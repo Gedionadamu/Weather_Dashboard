@@ -25,3 +25,5 @@ user can click on a city in the search history be presented with current and fut
 ![landing page.](./screenshot%201.jpg)
 
 ### GitHub Deployed site
+
+https://gedionadamu.github.io/Weather_Dashboard/
